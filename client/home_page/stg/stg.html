@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espace Stagiaire - CFPA</title>
+    <link rel="stylesheet" href="stg.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="icon" type="png" href="logo.png">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div class="logo">
+                <img src="logo.png" alt="CFPA Logo">
+                <h1>CFPA Stagiaire</h1>
+            </div>
+            <div class="user-info">
+                <div class="notification-icon" onclick="showNotifications()">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge" id="notificationBadge">2</span>
+                </div>
+                <div class="user-avatar" id="userAvatar" onclick="showProfile()">S</div>
+                <span id="userName">Stagiaire</span>
+                <button class="logout-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Déconnexion
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="welcome-section">
+            <h2>Bienvenue dans votre Espace Stagiaire</h2>
+            <p>Consultez vos cours, téléchargez vos ressources et suivez votre progression académique.</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-book-open"></i>
+                </div>
+                <div class="stat-number" id="totalModules">0</div>
+                <div class="stat-label">Modules</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-download"></i>
+                </div>
+                <div class="stat-number" id="totalDownloads">0</div>
+                <div class="stat-label">Téléchargements</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-calendar-day"></i>
+                </div>
+                <div class="stat-number" id="todayClasses">0</div>
+                <div class="stat-label">Cours Aujourd'hui</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="stat-number" id="averageGrade">0</div>
+                <div class="stat-label">Moyenne Générale</div>
+            </div>
+        </div>
+
+        <div class="actions-grid">
+            <div class="action-card">
+                <h3>
+                    <i class="fas fa-user-circle"></i>
+                    Mon Profil
+                </h3>
+                <p>Consultez et modifiez vos informations personnelles, photo et documents.</p>
+                <button class="action-btn" onclick="showProfile()">
+                    Voir le Profil
+                </button>
+            </div>
+            <div class="action-card">
+                <h3>
+                    <i class="fas fa-book"></i>
+                    Mes Modules
+                </h3>
+                <p>Consultez tous vos modules d'apprentissage et leur contenu pédagogique.</p>
+                <button class="action-btn" onclick="showModules()">
+                    Voir Mes Modules
+                </button>
+            </div>
+            <div class="action-card">
+                <h3>
+                    <i class="fas fa-star"></i>
+                    Notes
+                </h3>
+                <p>Consultez vos notes par module et suivez votre progression académique.</p>
+                <button class="action-btn" onclick="showGrades()">
+                    Consulter les Notes
+                </button>
+            </div>
+            <div class="action-card">
+                <h3>
+                    <i class="fas fa-calendar-alt"></i>
+                    Emploi du Temps
+                </h3>
+                <p>Consultez votre planning de cours et vos horaires par salle et enseignant.</p>
+                <button class="action-btn" onclick="showSchedule()">
+                    Mon Planning
+                </button>
+            </div>
+            <div class="action-card">
+                <h3>
+                    <i class="fas fa-folder-open"></i>
+                    Ressources
+                </h3>
+                <p>Accédez à toutes vos ressources pédagogiques, documents et supports de cours.</p>
+                <button class="action-btn" onclick="showResources()">
+                    Mes Ressources
+                </button>
+            </div>
+            <div class="action-card">
+                <h3>
+                    <i class="fas fa-comments"></i>
+                    Communication
+                </h3>
+                <p>Messagerie avec vos enseignants et autres stagiaires.</p>
+                <button class="action-btn" onclick="showCommunication()">
+                    Messages
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- Modal de déconnexion -->
+    <div id="logoutModal" class="modal">
+        <div class="modal-content">
+            <h3><i class="fas fa-sign-out-alt"></i> Déconnexion</h3>
+            <p>Êtes-vous sûr de vouloir vous déconnecter de votre espace stagiaire ?</p>
+            <div class="modal-buttons">
+                <button class="btn-cancel" onclick="closeModal()">
+                    <i class="fas fa-times"></i> Annuler
+                </button>
+                <button class="btn-confirm" onclick="confirmLogout()">
+                    <i class="fas fa-check"></i> Confirmer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="stg.js"></script>
+</body>
+</html>

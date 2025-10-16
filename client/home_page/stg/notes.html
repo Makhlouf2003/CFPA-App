@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mes Notes - Espace Stagiaire CFPA</title>
+    <link rel="stylesheet" href="notes.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="icon" type="image/png" href="logo.png">
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner"></i>
+            <p>Chargement de vos notes...</p>
+        </div>
+    </div>
+
+    <!-- Error Message -->
+    <div id="errorMessage" class="error-message" style="display: none;">
+        <i class="fas fa-exclamation-triangle"></i>
+        <span>Erreur de chargement</span>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div class="logo">
+                <img src="logo.png" alt="CFPA Logo">
+                <h1>CFPA - Mes Notes</h1>
+            </div>
+            <div class="user-info">
+                <div class="notification-icon" onclick="showNotifications()">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge" id="notificationBadge" style="display: none;">0</span>
+                </div>
+                <div class="user-avatar" id="userAvatar" onclick="showProfile()">S</div>
+                <span id="userName">Stagiaire</span>
+                <button class="back-btn" onclick="goBack()">
+                    <i class="fas fa-arrow-left"></i> Retour
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenu principal -->
+    <div class="container">
+        <!-- Section d'en-tête -->
+        <div class="header-section">
+            <h2><i class="fas fa-star"></i> Mes Notes et Évaluations</h2>
+            <p>Consultez vos notes par module et suivez votre progression académique</p>
+        </div>
+
+        <!-- Statistiques des notes -->
+        <div class="stats-section">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-number" id="averageGrade">0.0</div>
+                    <div class="stat-label">Moyenne Générale</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-trophy"></i>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-number" id="bestGrade">0.0</div>
+                    <div class="stat-label">Meilleure Note</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-book-open"></i>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-number" id="totalEvaluations">0</div>
+                    <div class="stat-label">Évaluations</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <div class="stat-info">
+                    <div class="stat-number" id="passedModules">0</div>
+                    <div class="stat-label">Modules Réussis</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filtres -->
+        <div class="filters-section">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Rechercher un module..." onkeyup="filterNotes()">
+            </div>
+            <div class="filter-buttons">
+                <button class="filter-btn active" onclick="filterByModule('all')">
+                    <i class="fas fa-th"></i> Tous
+                </button>
+                <button class="filter-btn" onclick="filterByModule('passed')">
+                    <i class="fas fa-check-circle"></i> Réussis
+                </button>
+                <button class="filter-btn" onclick="filterByModule('failed')">
+                    <i class="fas fa-times-circle"></i> À rattraper
+                </button>
+            </div>
+        </div>
+
+        <!-- Liste des notes par module -->
+        <div class="notes-container" id="notesContainer">
+            <!-- Les notes seront générées dynamiquement par JavaScript -->
+        </div>
+    </div>
+
+    <!-- Modal détails de note -->
+    <div id="gradeModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-star"></i> <span id="modalGradeTitle">Détails de la Note</span></h3>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="grade-details">
+                    <div class="grade-score-display">
+                        <span class="score" id="modalScore">0.0</span>
+                        <span class="out-of">/ 20</span>
+                    </div>
+                    <div class="grade-info-grid">
+                        <div class="info-item">
+                            <strong>Module:</strong>
+                            <span id="modalModule">-</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Enseignant:</strong>
+                            <span id="modalTeacher">-</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Date d'évaluation:</strong>
+                            <span id="modalDate">-</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Type d'évaluation:</strong>
+                            <span id="modalType">-</span>
+                        </div>
+                    </div>
+                    <div class="teacher-comment" id="modalComment" style="display: none;">
+                        <h4><i class="fas fa-comment"></i> Commentaire de l'enseignant</h4>
+                        <p>Aucun commentaire disponible.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal()">
+                    <i class="fas fa-times"></i> Fermer
+                </button>
+                <button class="btn-primary" onclick="contactTeacher()">
+                    <i class="fas fa-envelope"></i> Contacter le Professeur
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal contact enseignant -->
+    <div id="contactModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-envelope"></i> Contacter l'Enseignant</h3>
+                <span class="close" onclick="closeContactModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="teacher-contact-info">
+                    <div class="teacher-avatar">
+                        <img src="photo.jpg" alt="Photo enseignant" id="teacherPhoto">
+                    </div>
+                    <div class="teacher-info">
+                        <h4 id="contactTeacherName">Enseignant</h4>
+                        <p id="contactTeacherModule">Module</p>
+                        <div class="contact-options">
+                            <div class="contact-item">
+                                <i class="fas fa-envelope"></i>
+                                <span id="teacherEmail">contact@cfpa.dz</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <form class="contact-form">
+                    <div class="form-group">
+                        <label for="messageSubject">Sujet:</label>
+                        <input type="text" id="messageSubject" placeholder="Question sur ma note..." required>
+                    </div>
+                    <div class="form-group">
+                        <label for="messageContent">Message:</label>
+                        <textarea id="messageContent" rows="4" placeholder="Votre message..." required></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeContactModal()">
+                    <i class="fas fa-times"></i> Annuler
+                </button>
+                <button class="btn-primary" onclick="sendMessage()">
+                    <i class="fas fa-paper-plane"></i> Envoyer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="notes.js"></script>
+</body>
+</html>

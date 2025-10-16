@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications - CFPA</title>
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="notification.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="icon" type="png" href="logo.png">
+</head>
+<body>
+    <!-- ========== SIDEBAR ========== -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <img src="logo.png" alt="CFPA Logo" class="logo-img">
+                <h2>CFPA Admin</h2>
+            </div>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <ul>
+                <li class="nav-item">
+                    <div class="nav-link" onclick="showDashboard()">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Tableau de Bord</span>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <div class="nav-link" onclick="showUserManagement()">
+                        <i class="fas fa-users"></i>
+                        <span>Gestion Utilisateurs</span>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <div class="nav-link" onclick="showGroupManagement()">
+                        <i class="fas fa-layer-group"></i>
+                        <span>Groupes & Classes</span>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <div class="nav-link" onclick="showScheduleManagement()">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Emploi du Temps</span>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <div class="nav-link" onclick="showStatistics()">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Statistiques</span>
+                    </div>
+                </li>
+                <li class="nav-item active">
+                    <div class="nav-link" onclick="showNotifications()">
+                        <i class="fas fa-bell"></i>
+                        <span>Notifications</span>
+                        <span class="notification-count" id="adminNotifCount">0</span>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <div class="nav-link" onclick="showSettings()">
+                        <i class="fas fa-cog"></i>
+                        <span>Paramètres</span>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- ========== MAIN CONTENT ========== -->
+    <div class="main-content" id="mainContent">
+        <!-- Header -->
+        <header class="top-header">
+            <div class="header-left">
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1 class="page-title">Gestion des Notifications</h1>
+            </div>
+            <div class="header-right">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Rechercher notifications..." id="searchNotifications">
+                </div>
+                <div class="header-notifications">
+                    <button class="notification-btn" onclick="showNotifications()">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">0</span>
+                    </button>
+                </div>
+                <div class="user-profile">
+                    <div class="user-avatar">A</div>
+                    <div class="user-info">
+                        <span class="user-name">Administrateur</span>
+                        <span class="user-role">Admin Système</span>
+                    </div>
+                    <button class="logout-btn" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Loading Indicator -->
+        <div id="loadingIndicator" class="loading-indicator" style="display: none;">
+            <i class="fas fa-spinner fa-spin"></i>
+            <span>Chargement...</span>
+        </div>
+
+        <!-- Main Content Area -->
+        <main class="notifications-content">
+            <!-- Statistics Section -->
+            <div class="notifications-stats">
+                <div class="stat-card primary">
+                    <div class="stat-icon">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="totalNotifications">0</h3>
+                        <p>Total Notifications</p>
+                    </div>
+                </div>
+                <div class="stat-card info">
+                    <div class="stat-icon">
+                        <i class="fas fa-envelope-open"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="readNotifications">0</h3>
+                        <p>Notifications Lues</p>
+                    </div>
+                </div>
+                <div class="stat-card warning">
+                    <div class="stat-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="unreadNotifications">0</h3>
+                        <p>Non Lues</p>
+                    </div>
+                </div>
+                <div class="stat-card success">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="totalUsers">0</h3>
+                        <p>Utilisateurs</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions Section -->
+            <div class="notifications-actions">
+                <button class="btn-primary" onclick="openModal('createNotificationModal')">
+                    <i class="fas fa-plus"></i>
+                    Nouvelle Notification
+                </button>
+                <button class="btn-secondary" onclick="markAllAsRead()">
+                    <i class="fas fa-check-double"></i>
+                    Marquer tout comme lu
+                </button>
+                <button class="btn-secondary" onclick="deleteAllRead()">
+                    <i class="fas fa-trash"></i>
+                    Supprimer les lues
+                </button>
+                <div class="filter-dropdown">
+                    <button class="btn-secondary dropdown-toggle" onclick="toggleFilterDropdown()">
+                        <i class="fas fa-filter"></i>
+                        Filtrer
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-menu" id="filterDropdown">
+                        <a href="#" onclick="filterNotifications('all')">Toutes</a>
+                        <a href="#" onclick="filterNotifications('unread')">Non lues</a>
+                        <a href="#" onclick="filterNotifications('read')">Lues</a>
+                        <a href="#" onclick="filterNotifications('course')">Cours</a>
+                        <a href="#" onclick="filterNotifications('grade')">Notes</a>
+                        <a href="#" onclick="filterNotifications('schedule')">Planning</a>
+                        <a href="#" onclick="filterNotifications('system')">Système</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notifications List Section -->
+            <div class="notifications-list">
+                <div class="notifications-container" id="notificationsContainer">
+                    <!-- Les notifications seront générées par JavaScript -->
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination">
+                    <button class="pagination-btn" onclick="changePage(-1)">
+                        <i class="fas fa-chevron-left"></i>
+                        Précédent
+                    </button>
+                    <div class="pagination-info">
+                        <span id="currentPage">1</span> / <span id="totalPages">1</span>
+                    </div>
+                    <button class="pagination-btn" onclick="changePage(1)">
+                        Suivant
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- ========== MODALS ========== -->
+    
+    <!-- Create Notification Modal -->
+    <div id="createNotificationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-bell"></i> Créer une Nouvelle Notification</h3>
+                <button class="close-btn" onclick="closeModal('createNotificationModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="createNotificationForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="notifType">Type de notification</label>
+                            <select id="notifType" class="form-select" required>
+                                <option value="">Sélectionner un type</option>
+                                <option value="schedule">Changement Planning</option>
+                                <option value="system">Notification Système</option>
+                                <option value="announcement">Annonce</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="notifUser">Destinataire</label>
+                            <select id="notifRecipient" class="form-select" required>
+                                <option value="">Sélectionner un destinataire</option>
+                                <optgroup label="Groupes d'utilisateurs">
+                                    <option value="all_teachers">Tous les enseignants</option>
+                                    <option value="all_trainees">Tous les stagiaires</option>
+                                </optgroup>
+                                <optgroup label="Utilisateurs individuels" id="usersOptgroup">
+                                    <!-- Les utilisateurs seront chargés dynamiquement -->
+                                </optgroup>
+                                <!-- Les utilisateurs seront chargés dynamiquement -->
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="notifTitle">Titre de la notification</label>
+                        <input type="text" id="notifTitle" class="form-input" placeholder="Titre..." required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="notifMessage">Message</label>
+                        <textarea id="notifMessage" class="form-textarea" rows="4" placeholder="Décrivez votre notification..." required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="notifAdditionalInfo">Informations supplémentaires (optionnel)</label>
+                        <textarea id="notifAdditionalInfo" class="form-textarea" rows="2" placeholder="Informations supplémentaires..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn-secondary" onclick="closeModal('createNotificationModal')">
+                    <i class="fas fa-times"></i> Annuler
+                </button>
+                <button type="button" class="btn-primary" onclick="createNotification()">
+                    <i class="fas fa-paper-plane"></i> Envoyer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Details Modal -->
+    <div id="notificationDetailsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="detailsTitle"><i class="fas fa-bell"></i> Détails de la Notification</h3>
+                <button class="close-btn" onclick="closeModal('notificationDetailsModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="notificationDetailsContent">
+                    <!-- Contenu généré par JavaScript -->
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn-secondary" onclick="closeModal('notificationDetailsModal')">
+                    <i class="fas fa-times"></i> Fermer
+                </button>
+                <button type="button" class="btn-danger" id="deleteNotificationBtn">
+                    <i class="fas fa-trash"></i> Supprimer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmModal" class="modal">
+        <div class="modal-content small">
+            <div class="modal-header">
+                <h3 id="confirmTitle"><i class="fas fa-question-circle"></i> Confirmation</h3>
+            </div>
+            <div class="modal-body">
+                <p id="confirmMessage">Êtes-vous sûr de vouloir effectuer cette action ?</p>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeModal('confirmModal')">
+                    <i class="fas fa-times"></i> Annuler
+                </button>
+                <button class="btn-danger" id="confirmActionBtn">
+                    <i class="fas fa-check"></i> Confirmer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="notification.js"></script>
+</body>
+</html>

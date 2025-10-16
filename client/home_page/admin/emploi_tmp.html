@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Emplois du Temps - CFPA Admin</title>
+    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="emploi_tmp.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="icon" type="png" href="logo.png">
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <img src="logo.png" alt="CFPA Logo" class="logo-img">
+                <h2>CFPA Admin</h2>
+            </div>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <ul>
+                <li class="nav-item">
+                    <div class="nav-link" onclick="showDashboard()">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Tableau de Bord</span>
+                    </div>
+                </li>
+                
+                <li class="nav-item">
+                    <div class="nav-link" onclick="showUserManagement()">
+                        <i class="fas fa-users"></i>
+                        <span>Gestion Utilisateurs</span>
+                    </div>
+                </li>
+                
+                <li class="nav-item">
+                    <div class="nav-link" onclick="showGroupManagement()">
+                        <i class="fas fa-layer-group"></i>
+                        <span>Groupes & Classes</span>
+                    </div>
+                </li>
+                
+                <li class="nav-item active">
+                    <div class="nav-link" onclick="showScheduleManagement()">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Emploi du Temps</span>
+                    </div>
+                </li>
+                
+                <li class="nav-item">
+                    <div class="nav-link" onclick="showStatistics()">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Statistiques</span>
+                    </div>
+                </li>
+                
+                <li class="nav-item">
+                    <div class="nav-link" onclick="showNotifications()">
+                        <i class="fas fa-bell"></i>
+                        <span>Notifications</span>
+                        <span class="notification-count" id="adminNotifCount">0</span>
+                    </div>
+                </li>
+                
+                <li class="nav-item">
+                    <div class="nav-link" onclick="showSettings()">
+                        <i class="fas fa-cog"></i>
+                        <span>Paramètres</span>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="main-content" id="mainContent">
+        <!-- Top Header -->
+        <header class="top-header">
+            <div class="header-left">
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1 class="page-title">Gestion des Emplois du Temps</h1>
+            </div>
+            
+            <div class="header-right">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Rechercher dans le planning..." id="searchSchedule">
+                </div>
+                
+                <div class="header-notifications">
+                    <button class="notification-btn" onclick="showNotifications()">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">0</span>
+                    </button>
+                </div>
+                
+                <div class="user-profile">
+                    <div class="user-avatar">A</div>
+                    <div class="user-info">
+                        <span class="user-name">Administrateur</span>
+                        <span class="user-role">Admin Système</span>
+                    </div>
+                    <button class="logout-btn" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <main class="dashboard-content">
+            <!-- Section d'actions principales -->
+            <div class="action-header">
+                <div class="action-buttons">
+                    <button class="btn-primary" onclick="openModal('addScheduleModal')">
+                        <i class="fas fa-plus"></i>
+                        Nouveau Créneau
+                    </button>
+                    <button class="btn-success" onclick="refreshScheduleData()">
+                        <i class="fas fa-sync-alt"></i>
+                        Actualiser
+                    </button>
+                </div>
+                <!-- Filtre par spécialité -->
+                <div class="specialty-filter">
+                    <select id="specialtyFilter" onchange="filterBySpecialty()">
+                        <option value="">Selectionner Une Specialite</option>
+                        <option value="informatique">Informatique</option>
+                        <option value="electronique">Électronique</option>
+                        <option value="mecanique">Mécanique</option>
+                        <option value="couture">Couture</option>
+                        <option value="coiffure">Coiffure</option>
+                        <option value="comptabilite">Comptabilité</option>
+                        <option value="langues">Langues</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Filtres et navigation -->
+            <div class="filters-section">
+                <!-- Navigation semaine -->
+                <div class="week-navigation">
+                    <button class="btn-secondary" onclick="previousWeek()">
+                        <i class="fas fa-chevron-left"></i>
+                        Précédent
+                    </button>
+                    
+                    <div class="current-week">
+                        <span id="currentWeekDisplay">Semaine du 21 au 25 Janvier 2025</span>
+                    </div>
+                    
+                    <button class="btn-secondary" onclick="nextWeek()">
+                        Suivant
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Section des onglets -->
+            <div class="tabs-container">
+                <div class="tabs-header">
+                    <button class="tab-btn active" onclick="showTab('weekly')">
+                        <i class="fas fa-calendar-week"></i>
+                        Planning Hebdomadaire
+                    </button>
+                    
+                    <button class="tab-btn" onclick="showTab('room')">
+                        <i class="fas fa-door-open"></i>
+                        Salle
+                    </button>
+                    
+                    <button class="tab-btn" onclick="showTab('conflicts')">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Conflits
+                    </button>
+                </div>
+
+                <!-- Onglet Planning Hebdomadaire -->
+                <div id="weeklyTab" class="tab-content active">
+                    <div class="schedule-grid">
+                        <div class="time-column">
+                            <div class="time-header">Horaires</div>
+                            <div class="time-slot" data-time="08:00">08:00 - 09:30</div>
+                            <div class="time-slot" data-time="09:30">09:30 - 11:00</div>
+                            <div class="time-slot" data-time="11:00">11:00 - 12:30</div>
+                            <div class="time-slot" data-time="12:30">12:30 - 14:00</div>
+                            <div class="time-slot" data-time="14:00">14:00 - 15:30</div>
+                            <div class="time-slot" data-time="15:30">15:30 - 17:00</div>
+                        </div>
+                        
+                        <div class="days-grid">
+                            <!-- Dimanche -->
+                            <div class="day-column" data-day="sunday">
+                                <div class="day-header">Dimanche</div>
+                                <div class="day-slots" id="sundaySlots">
+                                    <div class="schedule-slot" data-time="08:00" onclick="openScheduleModal('sunday', '08:00')"></div>
+                                    <div class="schedule-slot" data-time="09:30" onclick="openScheduleModal('sunday', '09:30')"></div>
+                                    <div class="schedule-slot" data-time="11:00" onclick="openScheduleModal('sunday', '11:00')"></div>
+                                    <div class="schedule-slot" data-time="12:30" onclick="openScheduleModal('sunday', '12:30')"></div>
+                                    <div class="schedule-slot" data-time="14:00" onclick="openScheduleModal('sunday', '14:00')"></div>
+                                    <div class="schedule-slot" data-time="15:30" onclick="openScheduleModal('sunday', '15:30')"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Lundi -->
+                            <div class="day-column" data-day="monday">
+                                <div class="day-header">Lundi</div>
+                                <div class="day-slots" id="mondaySlots">
+                                    <div class="schedule-slot" data-time="08:00" onclick="openScheduleModal('monday', '08:00')"></div>
+                                    <div class="schedule-slot" data-time="09:30" onclick="openScheduleModal('monday', '09:30')"></div>
+                                    <div class="schedule-slot" data-time="11:00" onclick="openScheduleModal('monday', '11:00')"></div>
+                                    <div class="schedule-slot" data-time="12:30" onclick="openScheduleModal('monday', '12:30')"></div>
+                                    <div class="schedule-slot" data-time="14:00" onclick="openScheduleModal('monday', '14:00')"></div>
+                                    <div class="schedule-slot" data-time="15:30" onclick="openScheduleModal('monday', '15:30')"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Mardi -->
+                            <div class="day-column" data-day="tuesday">
+                                <div class="day-header">Mardi</div>
+                                <div class="day-slots" id="tuesdaySlots">
+                                    <div class="schedule-slot" data-time="08:00" onclick="openScheduleModal('tuesday', '08:00')"></div>
+                                    <div class="schedule-slot" data-time="09:30" onclick="openScheduleModal('tuesday', '09:30')"></div>
+                                    <div class="schedule-slot" data-time="11:00" onclick="openScheduleModal('tuesday', '11:00')"></div>
+                                    <div class="schedule-slot" data-time="12:30" onclick="openScheduleModal('tuesday', '12:30')"></div>
+                                    <div class="schedule-slot" data-time="14:00" onclick="openScheduleModal('tuesday', '14:00')"></div>
+                                    <div class="schedule-slot" data-time="15:30" onclick="openScheduleModal('tuesday', '15:30')"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Mercredi -->
+                            <div class="day-column" data-day="wednesday">
+                                <div class="day-header">Mercredi</div>
+                                <div class="day-slots" id="wednesdaySlots">
+                                    <div class="schedule-slot" data-time="08:00" onclick="openScheduleModal('wednesday', '08:00')"></div>
+                                    <div class="schedule-slot" data-time="09:30" onclick="openScheduleModal('wednesday', '09:30')"></div>
+                                    <div class="schedule-slot" data-time="11:00" onclick="openScheduleModal('wednesday', '11:00')"></div>
+                                    <div class="schedule-slot" data-time="12:30" onclick="openScheduleModal('wednesday', '12:30')"></div>
+                                    <div class="schedule-slot" data-time="14:00" onclick="openScheduleModal('wednesday', '14:00')"></div>
+                                    <div class="schedule-slot" data-time="15:30" onclick="openScheduleModal('wednesday', '15:30')"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Jeudi -->
+                            <div class="day-column" data-day="thursday">
+                                <div class="day-header">Jeudi</div>
+                                <div class="day-slots" id="thursdaySlots">
+                                    <div class="schedule-slot" data-time="08:00" onclick="openScheduleModal('thursday', '08:00')"></div>
+                                    <div class="schedule-slot" data-time="09:30" onclick="openScheduleModal('thursday', '09:30')"></div>
+                                    <div class="schedule-slot" data-time="11:00" onclick="openScheduleModal('thursday', '11:00')"></div>
+                                    <div class="schedule-slot" data-time="12:30" onclick="openScheduleModal('thursday', '12:30')"></div>
+                                    <div class="schedule-slot" data-time="14:00" onclick="openScheduleModal('thursday', '14:00')"></div>
+                                    <div class="schedule-slot" data-time="15:30" onclick="openScheduleModal('thursday', '15:30')"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Onglet Par Salle -->
+                <div id="roomTab" class="tab-content">
+                    <div class="room-schedule-container">
+                        <div class="room-selector">
+                            <select id="selectedRoom" onchange="loadRoomSchedule()">
+                                <option value="">Sélectionner une salle</option>
+                            </select>
+                        </div>
+                        
+                        <div id="roomScheduleDisplay" class="room-schedule">
+                            <div class="empty-state">
+                                <i class="fas fa-door-open"></i>
+                                <h3>Aucune salle sélectionnée</h3>
+                                <p>Sélectionnez une salle pour voir son occupation</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Onglet Conflits -->
+                <div id="conflictsTab" class="tab-content">
+                    <div class="conflicts-container">
+                        <div class="conflict-header">
+                            <h3><i class="fas fa-exclamation-triangle"></i> Conflits Détectés</h3>
+                            <button class="btn-warning" onclick="resolveAllConflicts()">
+                                <i class="fas fa-tools"></i> Résoudre Automatiquement
+                            </button>
+                        </div>
+                        
+                        <div id="conflictsList" class="conflicts-list">
+                            <!-- Les conflits seront affichés ici -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- ========== MODALS ========== -->
+
+    <!-- Modal Nouveau Créneau -->
+    <div id="addScheduleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-calendar-plus"></i> Nouveau Créneau</h3>
+                <button class="close-btn" onclick="closeModal('addScheduleModal')">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <form id="addScheduleForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="scheduleDay">Jour *</label>
+                            <select id="scheduleDay" required>
+                                <option value="">Sélectionner un jour</option>
+                                <option value="sunday">Dimanche</option>
+                                <option value="monday">Lundi</option>
+                                <option value="tuesday">Mardi</option>
+                                <option value="wednesday">Mercredi</option>
+                                <option value="thursday">Jeudi</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="scheduleTime">Créneau *</label>
+                            <select id="scheduleTime" required>
+                                <option value="">Sélectionner un créneau</option>
+                                <option value="08:00">08:00 - 09:30</option>
+                                <option value="09:30">09:30 - 11:00</option>
+                                <option value="11:00">11:00 - 12:30</option>
+                                <option value="12:30">12:30 - 14:00</option>
+                                <option value="14:00">14:00 - 15:30</option>
+                                <option value="15:30">15:30 - 17:00</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="scheduleSpeciality">Spécialité *</label>
+                            <select id="scheduleSpeciality" required onchange="loadModulesForSpeciality()">
+                                <option value="">Sélectionner une spécialité</option>
+                                <option value="informatique">Informatique</option>
+                                <option value="electronique">Électronique</option>
+                                <option value="mecanique">Mécanique</option>
+                                <option value="couture">Couture</option>
+                                <option value="coiffure">Coiffure</option>
+                                <option value="comptabilite">Comptabilité</option>
+                                <option value="langues">Langues</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="scheduleModule">Module *</label>
+                            <select id="scheduleModule" required disabled>
+                                <option value="">Sélectionner d'abord une spécialité</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="scheduleTeacher">Enseignant *</label>
+                            <select id="scheduleTeacher" required>
+                                <option value="">Sélectionner un enseignant</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="scheduleGroup">Groupe *</label>
+                            <select id="scheduleGroup" required>
+                                <option value="">Sélectionner un groupe</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="scheduleRoom">Salle *</label>
+                            <input type="text" id="scheduleRoom" placeholder="Nom de la Salle" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="scheduleType">Type de Cours</label>
+                            <select id="scheduleType">
+                                <option value="">Sélectionner un type</option>
+                                <option value="Cours">Cours</option>
+                                <option value="TD">TD</option>
+                                <option value="TP">TP</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="modal-actions">
+                <button type="button" class="btn-secondary" onclick="closeModal('addScheduleModal')">
+                    <i class="fas fa-times"></i> Annuler
+                </button>
+                <button type="button" class="btn-primary" onclick="saveSchedule()">
+                    <i class="fas fa-save"></i> Enregistrer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Édition Créneau -->
+    <div id="editScheduleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-edit"></i> Modifier le Créneau</h3>
+                <button class="close-btn" onclick="closeModal('editScheduleModal')">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <form id="editScheduleForm">
+                    <div class="schedule-details" id="editScheduleDetails">
+                        <!-- Détails du créneau à modifier -->
+                    </div>
+                </form>
+            </div>
+            
+            <div class="modal-actions">
+                <button type="button" class="btn-danger" onclick="deleteScheduleSlot()">
+                    <i class="fas fa-trash"></i> Supprimer
+                </button>
+                <button type="button" class="btn-secondary" onclick="closeModal('editScheduleModal')">
+                    <i class="fas fa-times"></i> Annuler
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmation -->
+    <div id="confirmModal" class="modal">
+        <div class="modal-content small">
+            <div class="modal-header">
+                <h3><i class="fas fa-question-circle"></i> Confirmation</h3>
+                <button class="close-btn" onclick="closeModal('confirmModal')">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <p id="confirmMessage">Êtes-vous sûr de vouloir effectuer cette action ?</p>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeModal('confirmModal')">
+                    <i class="fas fa-times"></i> Annuler
+                </button>
+                <button class="btn-primary" id="confirmAction">
+                    <i class="fas fa-check"></i> Confirmer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Déconnexion -->
+    <div id="logoutModal" class="modal">
+        <div class="modal-content small">
+            <div class="modal-header">
+                <h3><i class="fas fa-sign-out-alt"></i> Déconnexion</h3>
+            </div>
+            
+            <div class="modal-body">
+                <p>Êtes-vous sûr de vouloir vous déconnecter de votre espace administrateur ?</p>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeModal('logoutModal')">
+                    <i class="fas fa-times"></i> Annuler
+                </button>
+                <button class="btn-danger" onclick="confirmLogout()">
+                    <i class="fas fa-check"></i> Confirmer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="emploi_tmp.js"></script>
+</body>
+</html>

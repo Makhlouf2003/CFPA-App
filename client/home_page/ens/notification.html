@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications - CFPA Enseignant</title>
+    <link rel="stylesheet" href="notification.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="icon" type="png" href="logo.png">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div class="logo">
+                <img src="logo.png" alt="CFPA Logo">
+                <h1>CFPA Enseignant</h1>
+            </div>
+            <div class="user-info">
+                <div class="notification-icon active">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge" id="notificationBadge">3</span>
+                </div>
+                <div class="user-avatar" id="userAvatar" onclick="showProfile()">E</div>
+                <span id="userName">Enseignant</span>
+                <button class="back-btn" onclick="goBack()">
+                    <i class="fas fa-arrow-left"></i> Retour
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <div class="header-content">
+                <h2><i class="fas fa-bell"></i> Mes Notifications</h2>
+                <p>Restez informé de toutes les activités importantes</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn-secondary" onclick="markAllAsRead()">
+                    <i class="fas fa-check-double"></i> Tout marquer comme lu
+                </button>
+                <button class="btn-primary" onclick="refreshNotifications()">
+                    <i class="fas fa-sync-alt"></i> Actualiser
+                </button>
+            </div>
+        </div>
+
+        <div class="notifications-container">
+            <div class="notifications-filters">
+                <button class="filter-btn active" data-filter="all">
+                    <i class="fas fa-list"></i> Toutes
+                </button>
+                <button class="filter-btn" data-filter="unread">
+                    <i class="fas fa-envelope"></i> Non lues
+                </button>
+                <button class="filter-btn" data-filter="courses">
+                    <i class="fas fa-chalkboard"></i> Cours
+                </button>
+                <button class="filter-btn" data-filter="schedule">
+                    <i class="fas fa-calendar-alt"></i> Planning
+                </button>
+                <button class="filter-btn" data-filter="system">
+                    <i class="fas fa-cog"></i> Système
+                </button>
+            </div>
+
+            <div class="notifications-list" id="notificationsList">
+                <!-- Les notifications seront chargées dynamiquement -->
+            </div>
+
+            <div class="no-notifications" id="noNotifications" style="display: none;">
+                <div class="no-notifications-content">
+                    <i class="fas fa-bell-slash"></i>
+                    <h3>Aucune notification</h3>
+                    <p>Vous n'avez aucune notification pour le moment.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal pour afficher les détails d'une notification -->
+    <div id="notificationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Détails de la notification</h3>
+                <button class="close-btn" onclick="closeNotificationModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="notification-details">
+                    <div class="notification-meta">
+                        <span class="notification-type" id="modalType"></span>
+                        <span class="notification-date" id="modalDate"></span>
+                    </div>
+                    <div class="notification-content" id="modalContent"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeNotificationModal()">
+                    Fermer
+                </button>
+                <button class="btn-primary" onclick="markAsReadFromModal()">
+                    Marquer comme lu
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="notification.js"></script>
+</body>
+</html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Planning - CFPA</title>
+    <link rel="stylesheet" href="planning.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="icon" type="image/png" href="logo.png">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div class="logo">
+                <img src="logo.png" alt="CFPA Logo">
+                <h1>CFPA Planning</h1>
+            </div>
+            <div class="user-info">
+                <div class="notification-icon" onclick="showNotifications()">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge" id="notificationBadge">0</span>
+                </div>
+                <div class="user-avatar" id="userAvatar" onclick="showProfile()">S</div>
+                <span id="userName">Stagiaire</span>
+                <button class="back-btn" onclick="goBack()">
+                    <i class="fas fa-arrow-left"></i> Retour
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Loading indicator -->
+    <div id="loadingIndicator" class="loading-indicator" style="display: none;">
+        <i class="fas fa-spinner fa-spin"></i>
+        <span>Chargement de votre planning...</span>
+    </div>
+
+    <!-- Contenu principal -->
+    <div class="container">
+        <!-- Section d'en-tête -->
+        <div class="header-section">
+            <h2><i class="fas fa-calendar-alt"></i> Mon Emploi du Temps</h2>
+            <p>Consultez votre planning hebdomadaire et vos cours à venir</p>
+        </div>
+
+        <!-- Navigation temporelle -->
+        <div class="time-nav">
+            <button class="nav-btn" onclick="previousWeek()">
+                <i class="fas fa-chevron-left"></i> Semaine précédente
+            </button>
+            <div class="current-week">
+                <h3 id="currentWeekTitle">Semaine du 2 au 8 Septembre 2024</h3>
+                <span class="week-info" id="weekInfo">Semaine 36</span>
+            </div>
+            <button class="nav-btn" onclick="nextWeek()">
+                Semaine suivante <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+
+        <!-- Informations de la semaine -->
+        <div class="week-summary">
+            <div class="summary-item">
+                <div class="summary-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="summary-content">
+                    <span class="summary-value" id="totalHours">0h</span>
+                    <span class="summary-label">Total heures</span>
+                </div>
+            </div>
+            <div class="summary-item">
+                <div class="summary-icon">
+                    <i class="fas fa-book"></i>
+                </div>
+                <div class="summary-content">
+                    <span class="summary-value" id="totalCourses">0</span>
+                    <span class="summary-label">Cours prévus</span>
+                </div>
+            </div>
+            <div class="summary-item">
+                <div class="summary-icon">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <div class="summary-content">
+                    <span class="summary-value" id="totalRooms">0</span>
+                    <span class="summary-label">Salles différentes</span>
+                </div>
+            </div>
+            <div class="summary-item">
+                <div class="summary-icon">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+                <div class="summary-content">
+                    <span class="summary-value" id="totalTeachers">0</span>
+                    <span class="summary-label">Enseignants</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Planning principal -->
+        <div class="schedule-container">
+            <!-- Vue semaine -->
+            <div id="weekView" class="schedule-view active">
+                <div class="schedule-grid">
+                    <!-- En-tête des jours -->
+                    <div class="time-header"></div>
+                    <div class="day-header">
+                        <div class="day-name">Dimanche</div>
+                        <div class="day-date">07/09</div>
+                    </div>
+                    <div class="day-header">
+                        <div class="day-name">Lundi</div>
+                        <div class="day-date">08/09</div>
+                    </div>
+                    <div class="day-header">
+                        <div class="day-name">Mardi</div>
+                        <div class="day-date">09/09</div>
+                    </div>
+                    <div class="day-header">
+                        <div class="day-name">Mercredi</div>
+                        <div class="day-date">10/09</div>
+                    </div>
+                    <div class="day-header">
+                        <div class="day-name">Jeudi</div>
+                        <div class="day-date">11/09</div>
+                    </div>
+
+                    <!-- Créneaux horaires -->
+                    <div class="time-slot">08:00<br>09:30</div>
+                    <div class="course-cell empty" data-day="sunday" data-time="08:00"></div>
+                    <div class="course-cell empty" data-day="monday" data-time="08:00"></div>
+                    <div class="course-cell empty" data-day="tuesday" data-time="08:00"></div>
+                    <div class="course-cell empty" data-day="wednesday" data-time="08:00"></div>
+                    <div class="course-cell empty" data-day="thursday" data-time="08:00"></div>
+
+                    <div class="time-slot">09:30<br>11:00</div>
+                    <div class="course-cell empty" data-day="sunday" data-time="09:30"></div>
+                    <div class="course-cell empty" data-day="monday" data-time="09:30"></div>
+                    <div class="course-cell empty" data-day="tuesday" data-time="09:30"></div>
+                    <div class="course-cell empty" data-day="wednesday" data-time="09:30"></div>
+                    <div class="course-cell empty" data-day="thursday" data-time="09:30"></div>
+
+                    <div class="time-slot">11:00<br>12:30</div>
+                    <div class="course-cell empty" data-day="sunday" data-time="11:00"></div>
+                    <div class="course-cell empty" data-day="monday" data-time="11:00"></div>
+                    <div class="course-cell empty" data-day="tuesday" data-time="11:00"></div>
+                    <div class="course-cell empty" data-day="wednesday" data-time="11:00"></div>
+                    <div class="course-cell empty" data-day="thursday" data-time="11:00"></div>
+
+                    <div class="time-slot">12:30<br>14:00</div>
+                    <div class="course-cell empty" data-day="sunday" data-time="12:30"></div>
+                    <div class="course-cell empty" data-day="monday" data-time="12:30"></div>
+                    <div class="course-cell empty" data-day="tuesday" data-time="12:30"></div>
+                    <div class="course-cell empty" data-day="wednesday" data-time="12:30"></div>
+                    <div class="course-cell empty" data-day="thursday" data-time="12:30"></div>
+
+                    <div class="time-slot">14:00<br>15:30</div>
+                    <div class="course-cell empty" data-day="sunday" data-time="14:00"></div>
+                    <div class="course-cell empty" data-day="monday" data-time="14:00"></div>
+                    <div class="course-cell empty" data-day="tuesday" data-time="14:00"></div>
+                    <div class="course-cell empty" data-day="wednesday" data-time="14:00"></div>
+                    <div class="course-cell empty" data-day="thursday" data-time="14:00"></div>
+
+                    <div class="time-slot">15:30<br>17:00</div>
+                    <div class="course-cell empty" data-day="sunday" data-time="15:30"></div>
+                    <div class="course-cell empty" data-day="monday" data-time="15:30"></div>
+                    <div class="course-cell empty" data-day="tuesday" data-time="15:30"></div>
+                    <div class="course-cell empty" data-day="wednesday" data-time="15:30"></div>
+                    <div class="course-cell empty" data-day="thursday" data-time="15:30"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal détails du cours -->
+    <div id="courseModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-info-circle"></i> <span id="modalCourseTitle">Détails du cours</span></h3>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="course-details-modal">
+                    <div class="detail-item">
+                        <strong><i class="fas fa-book"></i> Module:</strong>
+                        <span id="modalModuleName">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong><i class="fas fa-user-tie"></i> Enseignant:</strong>
+                        <span id="modalTeacher">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong><i class="fas fa-clock"></i> Horaire:</strong>
+                        <span id="modalTime">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong><i class="fas fa-calendar"></i> Date:</strong>
+                        <span id="modalDate">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong><i class="fas fa-map-marker-alt"></i> Salle:</strong>
+                        <span id="modalRoom">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong><i class="fas fa-users"></i> Groupe:</strong>
+                        <span id="modalGroup">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong><i class="fas fa-info"></i> Statut:</strong>
+                        <span id="modalStatus" class="status-badge">-</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal()">
+                    <i class="fas fa-times"></i> Fermer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="planning.js"></script>
+</body>
+</html>

@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Groupes & Classes - CFPA Admin</title>
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="groupes_classes.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="png" href="logo.png">
+</head>
+<body>
+    <!-- ============================================== -->
+    <!-- SIDEBAR (NAVIGATION PRINCIPALE) -->
+    <!-- ============================================== -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <img src="logo.png" alt="CFPA Logo" class="logo-img">
+                <h2>CFPA Admin</h2>
+            </div>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <ul>
+                <li class="nav-item">
+                    <div class="nav-link" onclick="showDashboard()">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Tableau de Bord</span>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <div class="nav-link" onclick="showUserManagement()">
+                        <i class="fas fa-users"></i>
+                        <span>Gestion Utilisateurs</span>
+                    </div>
+                </li>
+                <li class="nav-item active">
+                    <div class="nav-link" onclick="showGroupManagement()">
+                        <i class="fas fa-layer-group"></i>
+                        <span>Groupes & Classes</span>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <div class="nav-link" onclick="showScheduleManagement()">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Emploi du Temps</span>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <div class="nav-link" onclick="showStatistics()">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Statistiques</span>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <div class="nav-link" onclick="showNotifications()">
+                        <i class="fas fa-bell"></i>
+                        <span>Notifications</span>
+                        <span class="notification-count" id="adminNotifCount">5</span>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <div class="nav-link" onclick="showSettings()">
+                        <i class="fas fa-cog"></i>
+                        <span>Paramètres</span>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- CONTENU PRINCIPAL -->
+    <!-- ============================================== -->
+    <div class="main-content" id="mainContent">
+        <!-- En-tête -->
+        <header class="top-header">
+            <div class="header-left">
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1 class="page-title">Gestion des Groupes & Classes</h1>
+            </div>
+            
+            <div class="header-right">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Rechercher..." id="searchGroups">
+                </div>
+                
+                <div class="header-notifications">
+                    <button class="notification-btn" onclick="showNotifications()">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                </div>
+                
+                <div class="user-profile">
+                    <div class="user-avatar">A</div>
+                    <div class="user-info">
+                        <span class="user-name">Administrateur</span>
+                        <span class="user-role">Admin Système</span>
+                    </div>
+                    <button class="logout-btn" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Contenu du tableau de bord -->
+        <main class="dashboard-content">
+            <!-- Section d'actions principales -->
+            <div class="action-header">
+                <div class="action-buttons">
+                    <button class="btn-primary" onclick="openModal('addGroupModal')">
+                        <i class="fas fa-plus"></i>
+                        Nouveau Groupe
+                    </button>
+                    <button class="btn-secondary" onclick="openModal('addModuleModal')">
+                        <i class="fas fa-chalkboard"></i>
+                        Nouveau Module
+                    </button>
+                    <button class="btn-info" onclick="refreshData()">
+                        <i class="fas fa-sync-alt"></i>
+                        Actualiser
+                    </button>
+                </div>
+                
+                <div class="filter-options">
+                    <select id="filterFormation" onchange="filterGroups()">
+                        <option value="">Toutes les formations</option>
+                        <option value="Informatique">Informatique</option>
+                        <option value="Électronique">Électronique</option>
+                        <option value="Mécanique">Mécanique</option>
+                        <option value="Couture">Couture</option>
+                        <option value="Coiffure">Coiffure</option>
+                        <option value="Comptabilité">Comptabilité</option>
+                        <option value="Langues">Langues</option>
+                    </select>
+                    
+                    <select id="filterStatus" onchange="filterGroups()">
+                        <option value="">Tous les statuts</option>
+                        <option value="Actif">Actif</option>
+                        <option value="En cours">En cours</option>
+                        <option value="Terminé">Terminé</option>
+                        <option value="En attente">En attente</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Statistiques rapides -->
+            <div class="quick-stats">
+                <div class="stat-item">
+                    <div class="stat-icon primary">
+                        <i class="fas fa-layer-group"></i>
+                    </div>
+                    <div class="stat-details">
+                        <span class="stat-number" id="totalGroups">0</span>
+                        <span class="stat-label">Groupes Total</span>
+                    </div>
+                </div>
+                
+                <div class="stat-item">
+                    <div class="stat-icon success">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <div class="stat-details">
+                        <span class="stat-number" id="totalModules">0</span>
+                        <span class="stat-label">Modules Total</span>
+                    </div>
+                </div>
+                
+                <div class="stat-item">
+                    <div class="stat-icon info">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-details">
+                        <span class="stat-number" id="totalStudents">0</span>
+                        <span class="stat-label">Stagiaires</span>
+                    </div>
+                </div>
+                
+                <div class="stat-item">
+                    <div class="stat-icon warning">
+                        <i class="fas fa-chalkboard-user"></i>
+                    </div>
+                    <div class="stat-details">
+                        <span class="stat-number" id="totalTeachers">0</span>
+                        <span class="stat-label">Enseignants</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section des onglets -->
+            <div class="tabs-container">
+                <div class="tabs-header">
+                    <button class="tab-btn active" onclick="showTab('groups')">
+                        <i class="fas fa-layer-group"></i>
+                        Groupes
+                    </button>
+                    
+                    <button class="tab-btn" onclick="showTab('modules')">
+                        <i class="fas fa-chalkboard"></i>
+                        Modules
+                    </button>
+                    
+                    <button class="tab-btn" onclick="showTab('assignments')">
+                        <i class="fas fa-user-plus"></i>
+                        Attributions
+                    </button>
+                </div>
+
+                <!-- ============================================== -->
+                <!-- CONTENU DES ONGLETS -->
+                <!-- ============================================== -->
+                
+                <!-- Onglet Groupes -->
+                <div id="groupsTab" class="tab-content active">
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Groupe</th>
+                                    <th>Formation</th>
+                                    <th>Stagiaires</th>
+                                    <th>Date création</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="groupsTableBody">
+                                <!-- Les données seront injectées ici par JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Onglet Modules -->
+                <div id="modulesTab" class="tab-content">
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Module</th>
+                                    <th>Nom de l'enseignant</th>
+                                    <th>Groupes assignés</th>
+                                    <th>Date création</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="modulesTableBody">
+                                <!-- Les données seront injectées ici par JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Onglet Attributions -->
+                <div id="assignmentsTab" class="tab-content">
+                    <div class="assignments-grid">
+                        <!-- Carte: Attribution Enseignants -->
+                        <div class="assignment-card">
+                            <h3><i class="fas fa-chalkboard-teacher"></i> Attribution Enseignants</h3>
+                            
+                            <div class="assignment-content">
+                                <div class="assignment-form">
+                                    <select id="teacherSelect">
+                                        <option value="">Sélectionner un enseignant</option>
+                                    </select>
+                                    
+                                    <select id="moduleSelectForTeacher">
+                                        <option value="">Sélectionner un module</option>
+                                    </select>
+                                    
+                                    <select id="groupSelectForTeacher">
+                                        <option value="">Sélectionner un groupe</option>
+                                    </select>
+                                    
+                                    <button class="btn-primary" onclick="assignTeacherToModule()">
+                                        <i class="fas fa-plus"></i> Attribuer
+                                    </button>
+                                </div>
+                                
+                                <div class="current-assignments" id="teacherAssignments">
+                                    <!-- Attributions actuelles des enseignants -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Carte: Attribution Stagiaires -->
+                        <div class="assignment-card">
+                            <h3><i class="fas fa-user-graduate"></i> Attribution Stagiaires</h3>
+                            
+                            <div class="assignment-content">
+                                <div class="assignment-form">
+                                    <select id="traineeSelect">
+                                        <option value="">Sélectionner un stagiaire</option>
+                                    </select>
+                                    
+                                    <select id="groupSelectForTrainee">
+                                        <option value="">Sélectionner un groupe</option>
+                                    </select>
+                                    
+                                    <button class="btn-success" onclick="assignTraineeToGroup()">
+                                        <i class="fas fa-plus"></i> Attribuer
+                                    </button>
+                                </div>
+                                
+                                <div class="current-assignments" id="traineeAssignments">
+                                    <!-- Attributions actuelles des stagiaires -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- MODALS (FENÊTRES MODALES) -->
+    <!-- ============================================== -->
+    
+    <!-- Modal: Nouveau Groupe -->
+    <div id="addGroupModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-layer-group"></i> Nouveau Groupe</h3>
+                <button class="close-btn" onclick="closeModal('addGroupModal')">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <form id="addGroupForm">
+                    <div class="form-group">
+                        <label for="groupName">Nom du Groupe *</label>
+                        <input type="text" id="groupName" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="groupFormation">Formation *</label>
+                        <select id="groupFormation" required>
+                            <option value="">Sélectionner une formation</option>
+                            <option value="Informatique">Informatique</option>
+                            <option value="Électronique">Électronique</option>
+                            <option value="Mécanique">Mécanique</option>
+                            <option value="Couture">Couture</option>
+                            <option value="Coiffure">Coiffure</option>
+                            <option value="Comptabilité">Comptabilité</option>
+                            <option value="Langues">Langues</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="groupDescription">Description</label>
+                        <textarea id="groupDescription" rows="3" placeholder="Description du groupe..."></textarea>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="groupCapacity">Capacité Max</label>
+                            <input type="number" id="groupCapacity" min="1" max="50" value="25">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="groupStatus">Statut</label>
+                            <select id="groupStatus">
+                                <option value="Actif">Actif</option>
+                                <option value="En cours">En cours</option>
+                                <option value="En attente">En attente</option>
+                                <option value="Terminé">Terminé</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="modal-actions">
+                <button type="button" class="btn-secondary" onclick="closeModal('addGroupModal')">
+                    <i class="fas fa-times"></i> Annuler
+                </button>
+                <button type="button" class="btn-primary" onclick="saveGroup()">
+                    <i class="fas fa-save"></i> Créer le Groupe
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Nouveau Module -->
+    <div id="addModuleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-chalkboard"></i> Nouveau Module</h3>
+                <button class="close-btn" onclick="closeModal('addModuleModal')">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <form id="addModuleForm">
+                    <div class="form-group">
+                        <label for="moduleName">Nom du Module *</label>
+                        <input type="text" id="moduleName" required placeholder="Le nom du module...">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="moduleSpeciality">Spécialité</label>
+                        <select id="moduleSpeciality">
+                            <option value="">Sélectionner une spécialité</option>
+                            <option value="Informatique">Informatique</option>
+                            <option value="Électronique">Électronique</option>
+                            <option value="Mécanique">Mécanique</option>
+                            <option value="Couture">Couture</option>
+                            <option value="Coiffure">Coiffure</option>
+                            <option value="Comptabilité">Comptabilité</option>
+                            <option value="Langues">Langues</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="moduleDescription">Description</label>
+                        <textarea id="moduleDescription" rows="3" placeholder="Description du module..."></textarea>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="moduleCoefficient">Coefficient</label>
+                            <input type="number" id="moduleCoefficient" min="1" max="10" value="1" step="0.5">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="modal-actions">
+                <button type="button" class="btn-secondary" onclick="closeModal('addModuleModal')">
+                    <i class="fas fa-times"></i> Annuler
+                </button>
+                <button type="button" class="btn-primary" onclick="saveModule()">
+                    <i class="fas fa-save"></i> Créer le Module
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Détails -->
+    <div id="detailsModal" class="modal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3 id="detailsTitle"><i class="fas fa-info-circle"></i> Détails</h3>
+                <button class="close-btn" onclick="closeModal('detailsModal')">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <div id="detailsContent">
+                    <!-- Le contenu sera injecté dynamiquement -->
+                </div>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeModal('detailsModal')">
+                    <i class="fas fa-times"></i> Fermer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Confirmation de Suppression -->
+    <div id="deleteConfirmModal" class="modal">
+        <div class="modal-content small">
+            <div class="modal-header">
+                <h3><i class="fas fa-exclamation-triangle"></i> Confirmer la Suppression</h3>
+                <button class="close-btn" onclick="closeModal('deleteConfirmModal')">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <p id="deleteConfirmText">Êtes-vous sûr de vouloir supprimer cet élément ?</p>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeModal('deleteConfirmModal')">
+                    <i class="fas fa-times"></i> Annuler
+                </button>
+                <button class="btn-danger" id="confirmDeleteBtn">
+                    <i class="fas fa-trash"></i> Supprimer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Déconnexion -->
+    <div id="logoutModal" class="modal">
+        <div class="modal-content small">
+            <div class="modal-header">
+                <h3><i class="fas fa-sign-out-alt"></i> Déconnexion</h3>
+            </div>
+            
+            <div class="modal-body">
+                <p>Êtes-vous sûr de vouloir vous déconnecter de votre espace administrateur ?</p>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeModal('logoutModal')">
+                    <i class="fas fa-times"></i> Annuler
+                </button>
+                <button class="btn-danger" onclick="confirmLogout()">
+                    <i class="fas fa-check"></i> Confirmer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts JavaScript -->
+    <script src="groupes_classes.js"></script>
+</body>
+</html>

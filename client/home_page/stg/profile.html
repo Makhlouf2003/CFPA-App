@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Profil - CFPA Stagiaire</title>
+    <link rel="stylesheet" href="profile.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="icon" type="png" href="logo.png">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div class="logo">
+                <img src="logo.png" alt="CFPA Logo">
+                <h1>CFPA Stagiaire</h1>
+            </div>
+            <div class="user-info">
+                <div class="notification-icon" onclick="showNotifications()">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge" id="notificationBadge">2</span>
+                </div>
+                <div class="user-avatar" id="userAvatar" onclick="showProfile()">S</div>
+                <span id="userName">Stagiaire</span>
+                <button class="back-btn" onclick="goBack()">
+                    <i class="fas fa-arrow-left"></i> Retour
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="profile-header">
+            <div class="profile-title">
+                <i class="fas fa-user-circle"></i>
+                <h2>Mon Profil</h2>
+            </div>
+            <div class="header-actions">
+                <div class="save-indicator" id="saveIndicator">
+                    <i class="fas fa-check-circle"></i> Modifications sauvegardées
+                </div>
+                <div class="profile-actions-header">
+                    <button class="btn-primary" onclick="saveProfile()">
+                        <i class="fas fa-save"></i> Sauvegarder
+                    </button>
+                    <button class="btn-secondary" onclick="resetForm()">
+                        <i class="fas fa-undo"></i> Annuler
+                    </button>
+                </div>
+            </div>    
+        </div>
+
+        <div class="profile-content">
+        
+            <div class="profile-section">
+                <div class="section-header">
+                    <h3><i class="fas fa-camera"></i> Photo de Profil</h3>
+                </div>
+                <div class="photo-section">
+                    <div class="profile-photo-container">
+                        <img id="profilePhoto" src="https://via.placeholder.com/150x150/667eea/ffffff?text=S">
+                        <div class="photo-overlay" onclick="triggerPhotoUpload()">
+                            <i class="fas fa-camera"></i>
+                            <span>Changer</span>
+                        </div>
+                    </div>
+                    <input type="file" id="photoInput" accept="image/*" style="display: none;">
+                    <div class="photo-actions">
+                        <button class="btn-secondary" onclick="triggerPhotoUpload()">
+                            <i class="fas fa-upload"></i> Changer la photo
+                        </button>
+                        <button class="btn-danger" onclick="removePhoto()">
+                            <i class="fas fa-trash"></i> Supprimer
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-section">
+                <div class="section-header">
+                    <h3><i class="fas fa-user"></i> Informations Personnelles</h3>
+                </div>
+                <form id="profileForm" class="profile-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="lastName">Nom </label>
+                            <input type="text" id="lastName" name="lastName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="firstName">Prénom </label>
+                            <input type="text" id="firstName" name="firstName" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="birthDate">Date de Naissance </label>
+                            <input type="date" id="birthDate" name="birthDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="gender">Genre</label>
+                            <select id="gender" name="gender">
+                                <option value="">Sélectionner</option>
+                                <option value="homme">Homme</option>
+                                <option value="femme">Femme</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="email">Email </label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Téléphone </label>
+                            <input type="tel" id="phone" name="phone" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="idNumber">Matricule </label>
+                            <input type="text" id="idNumber" name="idNumber" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="formation">Formation Suivie </label>
+                            <select id="formation" name="formation" required>
+                                <option value="">Sélectionner une formation</option>
+                                <option value="informatique">Informatique</option>
+                                <option value="electronique">Électronique</option>
+                                <option value="mecanique">Mécanique</option>
+                                <option value="couture">Couture</option>
+                                <option value="coiffure">Coiffure</option>
+                                <option value="comptabilite">Comptabilité</option>
+                                <option value="langues">Langues</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="address">Adresse Complète </label>
+                        <textarea id="address" name="address" rows="3" placeholder="Rue, ville, code postal..." required></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="studyLevel">Niveau d'Étude</label>
+                            <select id="studyLevel" name="studyLevel">
+                                <option value="">Sélectionner</option>
+                                <option value="primaire">Primaire</option>
+                                <option value="college">Collège</option>
+                                <option value="lycee">Lycée</option>
+                                <option value="bac">Baccalauréat</option>
+                                <option value="bac+2">Bac +2</option>
+                                <option value="bac+3">Bac +3 (Licence)</option>
+                                <option value="bac+5">Bac +5 (Master)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="emergencyContact">Contact d'Urgence</label>
+                            <input type="tel" id="emergencyContact" name="emergencyContact" placeholder="Numéro de téléphone">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="emergencyName">Nom Contact d'Urgence</label>
+                            <input type="text" id="emergencyName" name="emergencyName" placeholder="Nom et prénom">
+                        </div>
+                        <div class="form-group">
+                            <label for="relationship">Lien de Parenté</label>
+                            <select id="relationship" name="relationship">
+                                <option value="">Sélectionner</option>
+                                <option value="parent">Parent</option>
+                                <option value="conjoint">Conjoint(e)</option>
+                                <option value="frere_soeur">Frère/Sœur</option>
+                                <option value="ami">Ami(e)</option>
+                                <option value="autre">Autre</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="header-actions">
+                <div class="save-indicator" id="saveIndicator">
+                    <i class="fas fa-check-circle"></i> Modifications sauvegardées
+                </div>
+                <div class="profile-actions-header">
+                    <button class="btn-primary" onclick="saveProfile()">
+                        <i class="fas fa-save"></i> Sauvegarder
+                    </button>
+                    <button class="btn-secondary" onclick="resetForm()">
+                        <i class="fas fa-undo"></i> Annuler
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="profile.js"></script>
+</body>
+</html>

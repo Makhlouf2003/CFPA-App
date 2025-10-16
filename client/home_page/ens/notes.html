@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Notes - CFPA</title>
+    <link rel="stylesheet" href="notes.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="icon" type="png" href="logo.png">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div class="logo">
+                <img src="logo.png" alt="CFPA Logo">
+                <h1>CFPA Notes</h1>
+            </div>
+            <div class="user-info">
+                <div class="notification-icon" onclick="showNotifications()">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge" id="notificationBadge">3</span>
+                </div>
+                <div class="user-avatar" id="userAvatar" onclick="showProfile()">E</div>
+                <span id="userName">Enseignant</span>
+                <button class="back-btn" onclick="goBack()">
+                    <i class="fas fa-arrow-left"></i> Retour
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header-section">
+            <h2>Gestion des Notes</h2>
+            <p>Gérez les notes de vos stagiaires par module et matière</p>
+        </div>
+
+        <div class="main-actions">
+            <button class="export-btn main-btn" onclick="exportGrades()">
+                <i class="fas fa-file-export"></i> Exporter Notes
+            </button>
+        </div>
+
+        <div class="modules-container" id="modulesContainer">
+            <!-- Les modules seront ajoutés dynamiquement -->
+        </div>
+    </div>
+
+    <!-- Modal pour ajouter/modifier un stagiaire -->
+    <div id="studentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="studentModalTitle">Ajouter un Stagiaire</h3>
+                <span class="close" onclick="closeModal('studentModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="studentForm">
+                    <div class="form-group">
+                        <label for="studentLastName">Nom</label>
+                        <input type="text" id="studentLastName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="studentFirstName">Prénom</label>
+                        <input type="text" id="studentFirstName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="studentMatricule">Matricule</label>
+                        <input type="text" id="studentMatricule" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="studentModule">Module</label>
+                        <select id="studentModule" required>
+                            <option value="">Sélectionner un module</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="cancel-btn" onclick="closeModal('studentModal')">Annuler</button>
+                <button class="save-btn" onclick="saveStudent()">Sauvegarder</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal pour modifier les notes -->
+    <div id="gradesModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="gradesModalTitle">Modifier les Notes</h3>
+                <span class="close" onclick="closeModal('gradesModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="gradesForm">
+                    <div class="student-info" id="studentInfo">
+                        <!-- Info du stagiaire -->
+                    </div>
+                    <div class="grades-grid">
+                        <div class="form-group">
+                            <label for="test1Grade">Test 1 (/20)</label>
+                            <input type="number" id="test1Grade" min="0" max="20" step="0.25">
+                        </div>
+                        <div class="form-group">
+                            <label for="test2Grade">Test 2 (/20)</label>
+                            <input type="number" id="test2Grade" min="0" max="20" step="0.25">
+                        </div>
+                        <div class="form-group">
+                            <label for="examGrade">Examen (/20)</label>
+                            <input type="number" id="examGrade" min="0" max="20" step="0.25">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="cancel-btn" onclick="closeModal('gradesModal')">Annuler</button>
+                <button class="save-btn" onclick="saveGrades()">Sauvegarder</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="notes.js"></script>
+</body>
+</html>

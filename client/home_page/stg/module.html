@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mes Modules - Espace Stagiaire CFPA</title>
+    <link rel="stylesheet" href="module.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="icon" type="image/png" href="logo.png">
+</head>
+<body>
+    <!-- Loading overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Chargement de vos modules...</p>
+        </div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div class="logo">
+                <img src="logo.png" alt="CFPA Logo">
+                <h1>CFPA - Mes Modules</h1>
+            </div>
+            <div class="user-info">
+                <div class="notification-icon" onclick="showNotifications()">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge" id="notificationBadge">0</span>
+                </div>
+                <div class="user-avatar" id="userAvatar" onclick="showProfile()">S</div>
+                <span id="userName">Stagiaire</span>
+                <button class="back-btn" onclick="goBack()">
+                    <i class="fas fa-arrow-left"></i> Retour
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenu principal -->
+    <div class="container">
+        <!-- Section d'en-tête -->
+        <div class="header-section">
+            <h2><i class="fas fa-graduation-cap"></i> Mes Modules de Formation</h2>
+            <p>Accédez à tous vos modules et téléchargez les cours disponibles</p>
+            <div class="speciality-info" id="specialityInfo">
+                <i class="fas fa-tag"></i>
+                <span id="specialityName">Chargement...</span>
+            </div>
+        </div>
+
+        <!-- Filtres et recherche -->
+        <div class="filters-section">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Rechercher un module..." onkeyup="filterModules()">
+            </div>
+            <div class="filter-buttons">
+                <button class="filter-btn active" onclick="filterByStatus('all')">
+                    <i class="fas fa-th"></i> Tous
+                </button>
+                <button class="filter-btn" onclick="filterByStatus('completed')">
+                    <i class="fas fa-check-circle"></i> Terminés
+                </button>
+                <button class="filter-btn" onclick="filterByStatus('in-progress')">
+                    <i class="fas fa-spinner"></i> En cours
+                </button>
+                <button class="filter-btn" onclick="filterByStatus('not-started')">
+                    <i class="fas fa-clock"></i> Non commencés
+                </button>
+            </div>
+        </div>
+
+        <!-- Statistiques des modules -->
+        <div class="stats-bar">
+            <div class="stat-item">
+                <span class="stat-label">Total modules:</span>
+                <span class="stat-value" id="totalModules">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Modules terminés:</span>
+                <span class="stat-value" id="completedModules">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">En cours:</span>
+                <span class="stat-value" id="inProgressModules">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Progression globale:</span>
+                <span class="stat-value" id="globalProgress">0%</span>
+            </div>
+        </div>
+
+        <!-- Message d'erreur -->
+        <div id="errorMessage" class="error-message" style="display: none;">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span></span>
+        </div>
+
+        <!-- Message vide -->
+        <div id="emptyState" class="empty-state" style="display: none;">
+            <i class="fas fa-book-open"></i>
+            <h3>Aucun module disponible</h3>
+            <p>Aucun module n'est assigné à votre spécialité pour le moment.</p>
+        </div>
+
+        <!-- Grille des modules -->
+        <div class="modules-grid" id="modulesGrid">
+            <!-- Les modules seront chargés dynamiquement ici -->
+        </div>
+    </div>
+
+    <!-- Modal détails du module -->
+    <div id="moduleModal" class="modal">
+        <div class="modal-content large-modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-book"></i> <span id="modalModuleTitle">Titre du Module</span></h3>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="module-details">
+                    <div class="details-header">
+                        <p><strong>Enseignant:</strong> <span id="modalTeacher">Prof. Name</span></p>
+                        <p><strong>Progression:</strong> <span id="modalProgress">0%</span></p>
+                        <p><strong>Groupe:</strong> <span id="modalGroup">Groupe</span></p>
+                    </div>
+                    
+                    <h4><i class="fas fa-download"></i> Cours disponibles au téléchargement</h4>
+                    <div id="coursesList" class="courses-list">
+                        <!-- Les cours seront ajoutés dynamiquement ici -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal()">
+                    <i class="fas fa-times"></i> Fermer
+                </button>
+                <button class="btn-primary" onclick="downloadAllCourses()">
+                    <i class="fas fa-download"></i> Télécharger tout
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="module.js"></script>
+</body>
+</html>

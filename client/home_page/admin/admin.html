@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Administrateur - CFPA</title>
+    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="icon" type="png" href="logo.png">
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <img src="logo.png" alt="CFPA Logo" class="logo-img">
+                <h2>CFPA Admin</h2>
+            </div>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <ul>
+                <li class="nav-item active">
+                    <div class="nav-link" onclick="showDashboard()">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Tableau de Bord</span>
+                    </div>
+                </li>
+                
+                <li class="nav-item">
+                    <div class="nav-link" onclick="showUserManagement()">
+                        <i class="fas fa-users"></i>
+                        <span>Gestion Utilisateurs</span>
+                    </div>
+                </li>
+                
+                <li class="nav-item">
+                    <div class="nav-link" onclick="showGroupManagement()">
+                        <i class="fas fa-layer-group"></i>
+                        <span>Groupes & Classes</span>
+                    </div>
+                </li>
+                
+                <li class="nav-item">
+                    <div class="nav-link" onclick="showScheduleManagement()">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Emploi du Temps</span>
+                    </div>
+                </li>
+                
+                <li class="nav-item">
+                    <div class="nav-link" onclick="showStatistics()">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Statistiques</span>
+                    </div>
+                </li>
+                
+                <li class="nav-item">
+                    <div class="nav-link" onclick="showNotifications()">
+                        <i class="fas fa-bell"></i>
+                        <span>Notifications</span>
+                        <span class="notification-count" id="adminNotifCount">0</span>
+                    </div>
+                </li>
+                
+                <li class="nav-item">
+                    <div class="nav-link" onclick="showSettings()">
+                        <i class="fas fa-cog"></i>
+                        <span>Paramètres</span>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="main-content" id="mainContent">
+        <!-- Top Header -->
+        <header class="top-header">
+            <div class="header-left">
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1 class="page-title" id="pageTitle">Tableau de Bord Administrateur</h1>
+            </div>
+            
+            <div class="header-right">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Rechercher..." id="globalSearch">
+                </div>
+                
+                <div class="header-notifications">
+                    <button class="notification-btn" onclick="showNotifications()">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                </div>
+                
+                <div class="user-profile">
+                    <div class="user-avatar" id="userAvatar">A</div>
+                    <div class="user-info">
+                        <span class="user-name" id="userName">Administrateur</span>
+                        <span class="user-role">Admin Système</span>
+                    </div>
+                    <button class="logout-btn" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <main class="dashboard-content" id="dashboardContent">
+            <div class="stats-overview">
+                <!-- Users Card -->
+                <div class="stat-card primary">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="totalUsers">0</h3>
+                        <p>Utilisateurs Total</p>
+                    </div>
+                </div>
+                
+                <!-- Teachers Card -->
+                <div class="stat-card success">
+                    <div class="stat-icon">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="totalTeachers">0</h3>
+                        <p>Enseignants</p>
+                    </div>
+                </div>
+                
+                <!-- Trainees Card -->
+                <div class="stat-card info">
+                    <div class="stat-icon">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="totalTrainees">0</h3>
+                        <p>Stagiaires</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Logout Modal -->
+    <div id="logoutModal" class="modal">
+        <div class="modal-content small">
+            <div class="modal-header">
+                <h3><i class="fas fa-sign-out-alt"></i> Déconnexion</h3>
+            </div>
+            
+            <div class="modal-body">
+                <p>Êtes-vous sûr de vouloir vous déconnecter de votre espace administrateur ?</p>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeModal('logoutModal')">
+                    <i class="fas fa-times"></i> Annuler
+                </button>
+                
+                <button class="btn-danger" onclick="confirmLogout()">
+                    <i class="fas fa-check"></i> Confirmer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+</html>

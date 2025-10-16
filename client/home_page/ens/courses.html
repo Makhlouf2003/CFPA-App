@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Modules et Cours - CFPA</title>
+    <link rel="stylesheet" href="courses.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="icon" type="png" href="logo.png">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div class="logo">
+                <img src="logo.png" alt="CFPA Logo">
+                <h1>CFPA Cours</h1>
+            </div>
+            <div class="user-info">
+                <div class="notification-icon" onclick="showNotifications()">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge" id="notificationBadge">3</span>
+                </div>
+                <div class="user-avatar" id="userAvatar" onclick="showProfile()">E</div>
+                <span id="userName">Enseignant</span>
+                <button class="back-btn" onclick="goBack()">
+                    <i class="fas fa-arrow-left"></i> Retour
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header-section">
+            <h2>Gestion des Modules et Cours</h2>
+            <p>Organisez vos modules, cours et déposez vos ressources pédagogiques</p>
+        </div>
+
+        <div class="modules-container" id="modulesContainer">
+        </div>
+    </div>
+
+
+    <div id="courseModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="courseModalTitle">Créer un Nouveau Cours</h3>
+                <span class="close" onclick="closeModal('courseModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="courseForm">
+                    <div class="form-group">
+                        <label for="courseName">Nom du Cours</label>
+                        <input type="text" id="courseName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="courseDescription">Description (optionnelle)</label>
+                        <textarea id="courseDescription" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="cancel-btn" onclick="closeModal('courseModal')">Annuler</button>
+                <button class="save-btn" onclick="saveCourse()">Créer Cours</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="courses.js"></script>
+</body>
+</html>

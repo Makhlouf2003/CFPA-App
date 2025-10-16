@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des Stagiaires - CFPA</title>
+    <link rel="stylesheet" href="liste_stg.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="icon" type="png" href="logo.png">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div class="logo">
+                <img src="logo.png" alt="CFPA Logo">
+                <h1>CFPA Enseignant</h1>
+            </div>
+            <div class="nav-actions">
+                <div class="notification-icon" onclick="showNotifications()">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge" id="notificationBadge">0</span>
+                </div>
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar" onclick="showProfile()">E</div>
+                    <span id="userName">Enseignant</span>
+                </div>
+                <button class="back-btn" onclick="goBack()">
+                    <i class="fas fa-arrow-left"></i> Retour
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header-section">
+            <h2><i class="fas fa-user-graduate"></i> Liste des Stagiaires</h2>
+            <div class="header-actions">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Rechercher un stagiaire..." onkeyup="searchStudents()">
+                </div>
+                <button class="refresh-btn" onclick="refreshData()">
+                    <i class="fas fa-sync-alt"></i> Actualiser
+                </button>
+            </div>
+        </div>
+
+        <div class="students-summary">
+            <div class="summary-card">
+                <div class="summary-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="summary-info">
+                    <h3 id="totalStudents">0</h3>
+                    <p>Stagiaires Total</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="students-container">
+            <div class="students-list" id="studentsList">
+                <!-- Les stagiaires seront générés dynamiquement -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Contact Stagiaire -->
+    <div id="contactModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-envelope"></i> Contacter le Stagiaire</h3>
+                <span class="close" onclick="closeContactModal()">&times;</span>
+            </div>
+            <div class="contact-info" id="contactInfo">
+                <!-- Informations du stagiaire sélectionné -->
+            </div>
+            <div class="contact-options">
+                <button class="contact-btn email-btn" onclick="sendEmail()">
+                    <i class="fas fa-envelope"></i> Envoyer un Email
+                </button>
+                <button class="contact-btn message-btn" onclick="sendMessage()">
+                    <i class="fas fa-comment"></i> Message Direct
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="liste_stg.js"></script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <title>CFPA Page de connexion</title>
+    <link rel="icon" type="png" href="logo.png">
+</head>
+<body>
+    <div class="container-logo">
+        <img src="logo.png" >
+        <h3> CFPA  Bienvenue ! </h3>
+    </div>
+    <div class="container" id="container">
+        <div class="form-container sign-up">
+            <form id="register-form">
+                <h1>Créer un compte</h1>
+                <div class="name-row">
+                    <input type="text" id="register-name" name="name" placeholder="Nom *" required>
+                    <input type="text" id="register-firstName" name="firstName" placeholder="Prenom *" required>
+                </div>
+                <input type="text" id="register-matricule" name="matricule" placeholder="Matricule *" required>
+                <input type="email" id="register-email" name="email" placeholder="Email *" required>
+                <div class="password-container">
+                    <input type="password" id="register-password" name="password" placeholder="Mot de passe *" required>
+                    <i class="fa fa-eye password-toggle" onclick="togglePassword('register-password', this)"></i>
+                </div>
+                <div class="password-container">
+                    <input type="password" id="register-confirm-password" name="confirmPassword" placeholder="Confirmer mot de passe *" required>
+                    <i class="fa fa-eye password-toggle" onclick="togglePassword('register-confirm-password', this)"></i>
+                </div>
+                <select id="register-role" name="role" required>
+                    <option value="">Qui es-tu ?</option>
+                    <option value="Enseignant">Enseignant</option>
+                    <option value="Stagiaire">Stagiaire</option>
+                </select>
+                <button type="submit">S'inscrire</button>
+            </form>
+        </div>
+        <div class="form-container sign-in">
+            <form id="login-form">
+                <h1>Se connecter</h1>
+                <div class="social-icon">
+                    <a href="#" class="icon">
+                        <i class="fa-brands fa-apple"></i>
+                    </a>
+                    <a href="#" class="icon">
+                        <i class="fa-brands fa-microsoft"></i>
+                    </a>
+                    <a href="#" class="icon">
+                        <i class="fa-brands fa-google"></i>
+                    </a>
+                </div>
+                <span>ou utilisez votre email et mot de passe</span>
+                <input type="email" id="login-email" name="email" placeholder="Email *" required>
+                <input type="password" id="login-password" name="password" placeholder="Password *" required>
+                <a href="#">Mot de passe oublié ?</a>
+                <button type="submit">Se connecter</button>
+            </form>
+        </div>
+        <div class="toggle-container">
+            <div class="toggle">
+                 <div class="toggle-panel toggle-left">
+                    <h1>Bon retour !</h1>
+                    <p>Saisissez vos informations personnelles pour utiliser toutes les fonctionnalités du site</p>
+                    <button class="hidden" id="login">Se connecter</button>
+                </div>
+                <div class="toggle-panel toggle-right">
+                    <h1>Bonjour, ami !</h1>
+                    <p>Inscrivez-vous avec vos informations personnelles pour utiliser toutes les fonctionnalités du site</p>
+                    <button class="hidden" id="register">S'inscrire</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="script.js"></script>
+</body>
+</html>

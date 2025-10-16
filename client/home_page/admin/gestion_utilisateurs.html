@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Utilisateurs - CFPA</title>
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="gestion_utilisateurs.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="png" href="logo.png">
+</head>
+<body>
+    <!-- ============================================== -->
+    <!-- SIDEBAR (NAVIGATION PRINCIPALE) -->
+    <!-- ============================================== -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <img src="logo.png" alt="CFPA Logo" class="logo-img">
+                <h2>CFPA Admin</h2>
+            </div>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <ul>
+                <li class="nav-item">
+                    <div class="nav-link" onclick="showDashboard()">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Tableau de Bord</span>
+                    </div>
+                </li>
+                <li class="nav-item active">
+                    <div class="nav-link" onclick="showUserManagement()">
+                        <i class="fas fa-users"></i>
+                        <span>Gestion Utilisateurs</span>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <div class="nav-link" onclick="showGroupManagement()">
+                        <i class="fas fa-layer-group"></i>
+                        <span>Groupes & Classes</span>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <div class="nav-link" onclick="showScheduleManagement()">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Emploi du Temps</span>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <div class="nav-link" onclick="showStatistics()">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Statistiques</span>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <div class="nav-link" onclick="showNotifications()">
+                        <i class="fas fa-bell"></i>
+                        <span>Notifications</span>
+                        <span class="notification-count" id="adminNotifCount">0</span>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <div class="nav-link" onclick="showSettings()">
+                        <i class="fas fa-cog"></i>
+                        <span>Paramètres</span>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- CONTENU PRINCIPAL -->
+    <!-- ============================================== -->
+    <div class="main-content" id="mainContent">
+        <!-- En-tête -->
+        <header class="top-header">
+            <div class="header-left">
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1 class="page-title">Gestion des Utilisateurs</h1>
+            </div>
+            
+            <div class="header-right">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Rechercher un utilisateur..." id="searchUsers">
+                </div>
+                
+                <div class="header-notifications">
+                    <button class="notification-btn" onclick="showNotifications()">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">0</span>
+                    </button>
+                </div>
+                
+                <div class="user-profile">
+                    <div class="user-avatar">A</div>
+                    <div class="user-info">
+                        <span class="user-name">Administrateur</span>
+                        <span class="user-role">Admin Système</span>
+                    </div>
+                    <button class="logout-btn" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Contenu du tableau de bord -->
+        <main class="dashboard-content">
+            <!-- Navigation par onglets -->
+            <div class="tab-navigation">
+                <button class="tab-btn active" onclick="showTab('users')">
+                    <i class="fas fa-users"></i>
+                    Tous les Utilisateurs
+                </button>
+                <button class="tab-btn" onclick="showTab('teachers')">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                    Enseignants
+                </button>
+                <button class="tab-btn" onclick="showTab('trainees')">
+                    <i class="fas fa-user-graduate"></i>
+                    Stagiaires
+                </button>
+                <button class="tab-btn" onclick="showTab('pending')">
+                    <i class="fas fa-hourglass-half"></i>
+                    En attente
+                </button>
+            </div>
+
+            <!-- ============================================== -->
+            <!-- CONTENU DES ONGLETS -->
+            <!-- ============================================== -->
+            
+            <!-- Onglet: Tous les utilisateurs -->
+            <div id="usersTab" class="tab-content active">
+                <div class="content-header">
+                    <div class="header-left">
+                        <h2><i class="fas fa-users"></i> Liste des Utilisateurs</h2>
+                    </div>
+                    <div class="header-right">
+                        <div class="filter-controls">
+                            <select id="filterRole" onchange="filterUsers()">
+                                <option value="">Tous les rôles</option>
+                                <option value="Enseignant">Enseignants</option>
+                                <option value="Stagiaire">Stagiaires</option>
+                            </select>
+                            <select id="filterStatus" onchange="filterUsers()">
+                                <option value="">Tous les statuts</option>
+                                <option value="Actif">Actif</option>
+                                <option value="En attente">En attente</option>
+                                <option value="Inactif">Inactif</option>
+                            </select>
+                        </div>
+                        <button class="btn-primary" onclick="openModal('addUserModal')">
+                            <i class="fas fa-plus"></i>
+                            Ajouter Utilisateur
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Nom Complet</th>
+                                <th>Rôle</th>
+                                <th>Spécialité/Formation</th>
+                                <th>Statut</th>
+                                <th>Date d'inscription</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <!-- Les utilisateurs seront chargés ici -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Onglet: Enseignants -->
+            <div id="teachersTab" class="tab-content">
+                <div class="content-header">
+                    <div class="header-left">
+                        <h2><i class="fas fa-chalkboard-teacher"></i> Gestion des Enseignants</h2>
+                    </div>
+                </div>
+
+                <div class="teachers-grid" id="teachersGrid">
+                    <!-- Les cartes des enseignants seront chargées ici -->
+                </div>
+            </div>
+
+            <!-- Onglet: Stagiaires -->
+            <div id="traineesTab" class="tab-content">
+                <div class="content-header">
+                    <div class="header-left">
+                        <h2><i class="fas fa-user-graduate"></i> Gestion des Stagiaires</h2>
+                    </div>
+                </div>
+
+                <div class="trainees-grid" id="traineesGrid">
+                    <!-- Les cartes des stagiaires seront chargées ici -->
+                </div>
+            </div>
+
+            <!-- Onglet: En attente -->
+            <div id="pendingTab" class="tab-content">
+                <div class="content-header">
+                    <div class="header-left">
+                        <h2><i class="fas fa-hourglass-half"></i> Utilisateurs en Attente</h2>
+                    </div>
+                </div>
+
+                <div class="pending-list" id="pendingList">
+                    <!-- Les utilisateurs en attente seront chargés ici -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- MODALS (FENÊTRES MODALES) -->
+    <!-- ============================================== -->
+    
+    <!-- Modal: Ajouter un utilisateur -->
+    <div id="addUserModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-user-plus"></i> Ajouter un Utilisateur</h3>
+                <button class="close-btn" onclick="closeModal('addUserModal')">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <form id="addUserForm" class="user-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="userFirstName">Prénom *</label>
+                            <input type="text" id="userFirstName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="userLastName">Nom *</label>
+                            <input type="text" id="userLastName" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="userEmail">Email *</label>
+                            <input type="email" id="userEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="userPassword">Mot de passe *</label>
+                            <input type="password" id="userPassword" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="userRole">Rôle *</label>
+                            <select id="userRole" onchange="toggleRoleFields()" required>
+                                <option value="">Sélectionner un rôle</option>
+                                <option value="Enseignant">Enseignant</option>
+                                <option value="Stagiaire">Stagiaire</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="userMatricule">Matricule *</label>
+                            <input type="text" id="userMatricule" required>
+                        </div>
+                    </div>
+                    
+                    <!-- Champs spécifiques aux enseignants -->
+                    <div id="teacherFields" class="role-specific-fields" style="display: none;">
+                        <div class="form-group">
+                            <label for="teacherSpecialty">Spécialité *</label>
+                            <select id="teacherSpecialty">
+                                <option value="">Sélectionner une spécialité</option>
+                                <option value="Informatique">Informatique</option>
+                                <option value="Électronique">Électronique</option>
+                                <option value="Mécanique">Mécanique</option>
+                                <option value="Couture">Couture</option>
+                                <option value="Coiffure">Coiffure</option>
+                                <option value="Comptabilité">Comptabilité</option>
+                                <option value="Langues">Langues</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Champs spécifiques aux stagiaires -->
+                    <div id="traineeFields" class="role-specific-fields" style="display: none;">
+                        <div class="form-group">
+                            <label for="traineeFormation">Formation *</label>
+                            <select id="traineeFormation">
+                                <option value="">Sélectionner une formation</option>
+                                <option value="Informatique">Informatique</option>
+                                <option value="Électronique">Électronique</option>
+                                <option value="Mécanique">Mécanique</option>
+                                <option value="Couture">Couture</option>
+                                <option value="Coiffure">Coiffure</option>
+                                <option value="Comptabilité">Comptabilité</option>
+                                <option value="Langues">Langues</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeModal('addUserModal')">
+                    <i class="fas fa-times"></i> Annuler
+                </button>
+                <button class="btn-primary" onclick="saveUser()">
+                    <i class="fas fa-check"></i> Enregistrer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Détails de l'utilisateur -->
+    <div id="userDetailsModal" class="modal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3><i class="fas fa-user"></i> Détails de l'Utilisateur</h3>
+                <button class="close-btn" onclick="closeModal('userDetailsModal')">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <div id="userDetailsContent">
+                    <!-- Les détails de l'utilisateur seront chargés ici -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Confirmation de suppression -->
+    <div id="deleteConfirmModal" class="modal">
+        <div class="modal-content small">
+            <div class="modal-header">
+                <h3><i class="fas fa-exclamation-triangle"></i> Confirmation de Suppression</h3>
+                <button class="close-btn" onclick="closeModal('deleteConfirmModal')">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <p id="deleteConfirmText">Êtes-vous sûr de vouloir supprimer cet utilisateur ?</p>
+                <p class="warning-text">Cette action est irréversible.</p>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeModal('deleteConfirmModal')">
+                    <i class="fas fa-times"></i> Annuler
+                </button>
+                <button class="btn-danger" id="confirmDeleteBtn">
+                    <i class="fas fa-trash"></i> Supprimer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Déconnexion -->
+    <div id="logoutModal" class="modal">
+        <div class="modal-content small">
+            <div class="modal-header">
+                <h3><i class="fas fa-sign-out-alt"></i> Déconnexion</h3>
+            </div>
+            
+            <div class="modal-body">
+                <p>Êtes-vous sûr de vouloir vous déconnecter de votre espace administrateur ?</p>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeModal('logoutModal')">
+                    <i class="fas fa-times"></i> Annuler
+                </button>
+                <button class="btn-danger" onclick="confirmLogout()">
+                    <i class="fas fa-check"></i> Confirmer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts JavaScript -->
+    <script src="gestion_utilisateurs.js"></script>
+</body>
+</html>
