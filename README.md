@@ -1,0 +1,2 @@
+# CFPA-App
+A comprehensive web application for managing a professional training center (CFPA). Features user roles (admin, teachers, trainees), course management, scheduling, grades tracking, and real-time notifications.
